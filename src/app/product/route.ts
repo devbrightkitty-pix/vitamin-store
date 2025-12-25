@@ -1,23 +1,23 @@
 /**
- * GET /api/products
+ * GET /api/product
  * 
- * Fetch a paginated list of products from the Shopify Storefront API.
+ * Fetch a paginated list of product from the Shopify Storefront API.
  * 
  * Query Parameters:
  * - cursor: Pagination cursor for fetching next page
- * - limit: Number of products to fetch (default: 20, max: 100)
+ * - limit: Number of product to fetch (default: 20, max: 100)
  * - search: Search query string
  * - sortKey: Sort key (TITLE, PRICE, BEST_SELLING, etc.)
  * - reverse: Reverse sort order (true/false)
  * 
  * Response:
- * - items: Array of products with id, title, handle, featuredImage, priceRange, availableForSale
+ * - items: Array of product with id, title, handle, featuredImage, priceRange, availableForSale
  * - pageInfo: { hasNextPage, endCursor }
  */
 
 import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
-import { PRODUCTS_QUERY } from "@/lib/shopify/queries/products";
+import { PRODUCTS_QUERY } from "@/lib/shopify/queries/products.ts.bak";
 import { ProductsQueryResponse } from "@/lib/shopify/types";
 import { mapProductsConnection } from "@/lib/shopify/mappers";
 import { withErrorHandling } from "@/lib/api/errors";

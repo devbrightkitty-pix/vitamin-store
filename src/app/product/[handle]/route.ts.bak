@@ -1,5 +1,5 @@
 /**
- * GET /api/products/[handle]
+ * GET /api/product/[handle]
  * 
  * Fetch a single product by its handle from the Shopify Storefront API.
  * 
@@ -13,7 +13,7 @@
 
 import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
-import { PRODUCT_BY_HANDLE_QUERY } from "@/lib/shopify/queries/products";
+import { PRODUCT_BY_HANDLE_QUERY } from "@/lib/shopify/queries/product.ts";
 import { ProductByHandleQueryResponse } from "@/lib/shopify/types";
 import { mapProductToDetail } from "@/lib/shopify/mappers";
 import { withErrorHandling, createErrorResponse } from "@/lib/api/errors";

@@ -10,7 +10,7 @@ interface NavLink {
 
 const navLinks: NavLink[] = [
   { label: "Supplements", href: "/supplements" },
-  { label: "Products", href: "/products" },
+  { label: "Products", href: "/product" },
   { label: "Rewards", href: "/rewards" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },
