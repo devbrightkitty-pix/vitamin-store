@@ -12,7 +12,7 @@
 
 import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
-import { CART_QUERY } from "@/lib/shopify/queries/cart";
+import { CART_QUERY } from "@/lib/shopify/queries/cart.ts.bak";
 import { CartQueryResponse } from "@/lib/shopify/types";
 import { withErrorHandling, createErrorResponse } from "@/lib/api/errors";
 import { CartIdSchema, parseRouteParams } from "@/lib/api/validation";

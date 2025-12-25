@@ -17,7 +17,7 @@
 
 import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
-import { PRODUCTS_QUERY } from "@/lib/shopify/queries/products";
+import { PRODUCTS_QUERY } from "@/lib/shopify/queries/products.ts.bak";
 import { ProductsQueryResponse } from "@/lib/shopify/types";
 import { mapProductsConnection } from "@/lib/shopify/mappers";
 import { withErrorHandling } from "@/lib/api/errors";

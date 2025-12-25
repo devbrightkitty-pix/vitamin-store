@@ -1,258 +1,272 @@
-/**
- * TypeScript types for Shopify Storefront API responses
- * These types represent the data structures returned by the Storefront GraphQL API
- */
+export type Maybe<T> = T | null;
 
-// Base types
-export interface Money {
-  amount: string;
-  currencyCode: string;
-}
+export type Connection<T> = {
+  edges: Array<Edge<T>>;
+};
 
-export interface Image {
-  url: string;
-  altText: string | null;
-  width: number;
-  height: number;
-}
+export type Edge<T> = {
+  node: T;
+};
 
-export interface SEO {
-  title: string | null;
-  description: string | null;
-}
+export type Cart = Omit<ShopifyCart, 'lines'> & {
+  lines: CartItem[];
+};
 
-// Product types
-export interface ProductPriceRange {
-  minVariantPrice: Money;
-  maxVariantPrice: Money;
-}
-
-export interface ProductVariantSelectedOption {
-  name: string;
-  value: string;
-}
-
-export interface ProductVariant {
+export type CartProduct = {
   id: string;
-  title: string;
-  availableForSale: boolean;
-  selectedOptions: ProductVariantSelectedOption[];
-  price: Money;
-  compareAtPrice: Money | null;
-  quantityAvailable: number | null;
-}
-
-export interface Product {
-  id: string;
-  title: string;
   handle: string;
-  description: string;
-  descriptionHtml: string;
-  availableForSale: boolean;
-  featuredImage: Image | null;
-  images: {
-    edges: Array<{
-      node: Image;
-    }>;
-  };
-  priceRange: ProductPriceRange;
-  variants: {
-    edges: Array<{
-      node: ProductVariant;
-    }>;
-  };
-  seo: SEO;
-}
+  title: string;
+  featuredImage: Image;
+};
 
-export interface ProductEdge {
-  cursor: string;
-  node: Product;
-}
-
-export interface PageInfo {
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  startCursor: string | null;
-  endCursor: string | null;
-}
-
-export interface ProductConnection {
-  edges: ProductEdge[];
-  pageInfo: PageInfo;
-}
-
-// Cart types
-export interface CartLineItem {
-  id: string;
+export type CartItem = {
+  id: string | undefined;
   quantity: number;
+  cost: {
+    totalAmount: Money;
+  };
   merchandise: {
     id: string;
     title: string;
-    product: {
-      id: string;
-      title: string;
-      handle: string;
-      featuredImage: Image | null;
-    };
-    selectedOptions: ProductVariantSelectedOption[];
-    price: Money;
+    selectedOptions: {
+      name: string;
+      value: string;
+    }[];
+    product: CartProduct;
   };
-  cost: {
-    totalAmount: Money;
-    amountPerQuantity: Money;
-  };
-}
+};
 
-export interface CartCost {
-  subtotalAmount: Money;
-  totalAmount: Money;
-  totalTaxAmount: Money | null;
-}
+export type Collection = ShopifyCollection & {
+  path: string;
+};
 
-export interface Cart {
-  id: string;
-  checkoutUrl: string;
-  totalQuantity: number;
-  lines: {
-    edges: Array<{
-      node: CartLineItem;
-    }>;
-  };
-  cost: CartCost;
-}
+export type Image = {
+  url: string;
+  altText: string;
+  width: number;
+  height: number;
+};
 
-export interface CartUserError {
-  field: string[] | null;
-  message: string;
-  code: string;
-}
+export type Menu = {
+  title: string;
+  path: string;
+};
 
-// API Response types (mapped/transformed for frontend consumption)
-export interface ProductListItem {
+export type Money = {
+  amount: string;
+  currencyCode: string;
+};
+
+export type Page = {
   id: string;
   title: string;
   handle: string;
-  featuredImage: Image | null;
-  priceRange: {
-    minPrice: Money;
-    maxPrice: Money;
-  };
-  availableForSale: boolean;
-}
+  body: string;
+  bodySummary: string;
+  seo?: SEO;
+  createdAt: string;
+  updatedAt: string;
+};
 
-export interface ProductListResponse {
-  items: ProductListItem[];
-  pageInfo: {
-    hasNextPage: boolean;
-    endCursor: string | null;
-  };
-}
+export type Product = Omit<ShopifyProduct, 'variants' | 'images'> & {
+  variants: ProductVariant[];
+  images: Image[];
+};
 
-export interface ProductDetailVariant {
+export type ProductOption = {
+  id: string;
+  name: string;
+  values: string[];
+};
+
+export type ProductVariant = {
   id: string;
   title: string;
   availableForSale: boolean;
-  selectedOptions: ProductVariantSelectedOption[];
+  selectedOptions: {
+    name: string;
+    value: string;
+  }[];
   price: Money;
-  compareAtPrice: Money | null;
-  quantityAvailable: number | null;
-}
+};
 
-export interface ProductDetailResponse {
-  id: string;
+export type SEO = {
   title: string;
+  description: string;
+};
+
+export type ShopifyCart = {
+  id: string | undefined;
+  checkoutUrl: string;
+  cost: {
+    subtotalAmount: Money;
+    totalAmount: Money;
+    totalTaxAmount: Money;
+  };
+  lines: Connection<CartItem>;
+  totalQuantity: number;
+};
+
+export type ShopifyCollection = {
   handle: string;
+  title: string;
+  description: string;
+  seo: SEO;
+  updatedAt: string;
+};
+
+export type ShopifyProduct = {
+  id: string;
+  handle: string;
+  availableForSale: boolean;
+  title: string;
   description: string;
   descriptionHtml: string;
-  availableForSale: boolean;
-  images: Array<{
-    url: string;
-    altText: string | null;
-    width: number;
-    height: number;
-  }>;
-  variants: ProductDetailVariant[];
+  options: ProductOption[];
+  priceRange: {
+    maxVariantPrice: Money;
+    minVariantPrice: Money;
+  };
+  variants: Connection<ProductVariant>;
+  featuredImage: Image;
+  images: Connection<Image>;
   seo: SEO;
-}
+  tags: string[];
+  updatedAt: string;
+};
 
-export interface CartLineItemResponse {
-  id: string;
-  quantity: number;
-  merchandiseId: string;
-  title: string;
-  productTitle: string;
-  productHandle: string;
-  featuredImage: Image | null;
-  selectedOptions: ProductVariantSelectedOption[];
-  price: Money;
-  totalPrice: Money;
-}
-
-export interface CartResponse {
-  id: string;
-  checkoutUrl: string;
-  totalQuantity: number;
-  lines: CartLineItemResponse[];
-  cost: {
-    subtotal: Money;
-    total: Money;
-    tax: Money | null;
+export type ShopifyCartOperation = {
+  data: {
+    cart: ShopifyCart;
   };
-}
+  variables: {
+    cartId: string;
+  };
+};
 
-// GraphQL response wrappers
-export interface ShopifyGraphQLResponse<T> {
-  data?: T;
-  errors?: Array<{
-    message: string;
-    locations?: Array<{
-      line: number;
-      column: number;
-    }>;
-    path?: string[];
-    extensions?: {
-      code?: string;
-      [key: string]: unknown;
+export type ShopifyCreateCartOperation = {
+  data: { cartCreate: { cart: ShopifyCart } };
+};
+
+export type ShopifyAddToCartOperation = {
+  data: {
+    cartLinesAdd: {
+      cart: ShopifyCart;
     };
-  }>;
-}
-
-export interface ProductsQueryResponse {
-  products: ProductConnection;
-}
-
-export interface ProductByHandleQueryResponse {
-  productByHandle: Product | null;
-}
-
-export interface CartCreateResponse {
-  cartCreate: {
-    cart: Cart | null;
-    userErrors: CartUserError[];
   };
-}
-
-export interface CartQueryResponse {
-  cart: Cart | null;
-}
-
-export interface CartLinesAddResponse {
-  cartLinesAdd: {
-    cart: Cart | null;
-    userErrors: CartUserError[];
+  variables: {
+    cartId: string;
+    lines: {
+      merchandiseId: string;
+      quantity: number;
+    }[];
   };
-}
+};
 
-export interface CartLinesUpdateResponse {
-  cartLinesUpdate: {
-    cart: Cart | null;
-    userErrors: CartUserError[];
+export type ShopifyRemoveFromCartOperation = {
+  data: {
+    cartLinesRemove: {
+      cart: ShopifyCart;
+    };
   };
-}
+  variables: {
+    cartId: string;
+    lineIds: string[];
+  };
+};
 
-export interface CartLinesRemoveResponse {
-  cartLinesRemove: {
-    cart: Cart | null;
-    userErrors: CartUserError[];
+export type ShopifyUpdateCartOperation = {
+  data: {
+    cartLinesUpdate: {
+      cart: ShopifyCart;
+    };
   };
-}
+  variables: {
+    cartId: string;
+    lines: {
+      id: string;
+      merchandiseId: string;
+      quantity: number;
+    }[];
+  };
+};
+
+export type ShopifyCollectionOperation = {
+  data: {
+    collection: ShopifyCollection;
+  };
+  variables: {
+    handle: string;
+  };
+};
+
+export type ShopifyCollectionProductsOperation = {
+  data: {
+    collection: {
+      products: Connection<ShopifyProduct>;
+    };
+  };
+  variables: {
+    handle: string;
+    reverse?: boolean;
+    sortKey?: string;
+  };
+};
+
+export type ShopifyCollectionsOperation = {
+  data: {
+    collections: Connection<ShopifyCollection>;
+  };
+};
+
+export type ShopifyMenuOperation = {
+  data: {
+    menu?: {
+      items: {
+        title: string;
+        url: string;
+      }[];
+    };
+  };
+  variables: {
+    handle: string;
+  };
+};
+
+export type ShopifyPageOperation = {
+  data: { pageByHandle: Page };
+  variables: { handle: string };
+};
+
+export type ShopifyPagesOperation = {
+  data: {
+    pages: Connection<Page>;
+  };
+};
+
+export type ShopifyProductOperation = {
+  data: { product: ShopifyProduct };
+  variables: {
+    handle: string;
+  };
+};
+
+export type ShopifyProductRecommendationsOperation = {
+  data: {
+    productRecommendations: ShopifyProduct[];
+  };
+  variables: {
+    productId: string;
+  };
+};
+
+export type ShopifyProductsOperation = {
+  data: {
+    products: Connection<ShopifyProduct>;
+  };
+  variables: {
+    query?: string;
+    reverse?: boolean;
+    sortKey?: string;
+  };
+};

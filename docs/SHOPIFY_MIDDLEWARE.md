@@ -382,8 +382,8 @@ src/
     │   ├── types.ts                  # TypeScript types
     │   ├── mappers.ts                # Data transformation
     │   └── queries/
-    │       ├── products.ts           # Product queries
-    │       └── cart.ts               # Cart queries/mutations
+    │       ├── products.ts.bak           # Product queries
+    │       └── cart.ts.bak               # Cart queries/mutations
     └── api/
         ├── errors.ts                 # Error handling
         └── validation.ts             # Input validation schemas
