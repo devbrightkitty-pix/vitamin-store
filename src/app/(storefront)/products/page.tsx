@@ -40,11 +40,11 @@ export default function ProductsPage() {
     try {
       const url = nextCursor
         ? `/api/products?limit=12&cursor=${encodeURIComponent(nextCursor)}`
-        : "/api/products?limit=12";
+        : "/api/product?limit=12";
       
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error("Failed to fetch products");
+        throw new Error("Failed to fetch product");
       }
       const data: ProductsResponse = await response.json();
       

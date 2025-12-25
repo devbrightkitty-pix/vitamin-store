@@ -316,7 +316,7 @@ All errors follow a consistent format:
 ### TypeScript/JavaScript
 
 ```typescript
-// Fetch products
+// Fetch product
 const response = await fetch('/api/products?limit=12');
 const data = await response.json();
 
@@ -356,26 +356,26 @@ src/
 ├── app/
 │   ├── api/
 │   │   ├── products/
-│   │   │   ├── route.ts              # GET /api/products
+│   │   │   ├── route.ts.bak              # GET /api/products
 │   │   │   └── [handle]/
-│   │   │       └── route.ts          # GET /api/products/[handle]
+│   │   │       └── route.ts.bak          # GET /api/products/[handle]
 │   │   └── cart/
-│   │       ├── route.ts              # POST /api/cart
+│   │       ├── route.ts.bak              # POST /api/cart
 │   │       └── [cartId]/
-│   │           ├── route.ts          # GET /api/cart/[cartId]
+│   │           ├── route.ts.bak          # GET /api/cart/[cartId]
 │   │           ├── lines/
-│   │           │   └── route.ts      # POST/PATCH/DELETE /api/cart/[cartId]/lines
+│   │           │   └── route.ts.bak      # POST/PATCH/DELETE /api/cart/[cartId]/lines
 │   │           └── checkout/
-│   │               └── route.ts      # POST /api/cart/[cartId]/checkout
+│   │               └── route.ts.bak      # POST /api/cart/[cartId]/checkout
 │   └── (storefront)/
 │       ├── layout.tsx
-│       ├── page.tsx                  # Home page
+│       ├── page.tsx.bak                  # Home page
 │       ├── products/
-│       │   ├── page.tsx              # Products listing
+│       │   ├── page.tsx.bak              # Products listing
 │       │   └── [handle]/
-│       │       └── page.tsx          # Product detail
+│       │       └── page.tsx.bak          # Product detail
 │       └── cart/
-│           └── page.tsx              # Cart page
+│           └── page.tsx.bak              # Cart page
 └── lib/
     ├── shopify/
     │   ├── client.ts                 # Storefront GraphQL client

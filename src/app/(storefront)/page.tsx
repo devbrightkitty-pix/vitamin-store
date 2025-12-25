@@ -1,112 +1,44 @@
-"use client";
+import type { Metadata } from 'next';
+import Prose from '@/components/Prose';
+import { getPage } from '@/lib/shopify';
+import { notFound } from 'next/navigation';
 
-import React, { useEffect, useState } from "react";
-import Card from "@/components/Card";
+export async function generateMetadata(props: {
+    params: Promise<{ page: string }>;
+}): Promise<Metadata> {
+    const params = await props.params;
+    const page = await getPage(params.page);
 
-interface Product {
-  id: string;
-  title: string;
-  handle: string;
-  featuredImage: {
-    url: string;
-    altText: string | null;
-  } | null;
-  priceRange: {
-    minPrice: {
-      amount: string;
-      currencyCode: string;
-    };
-  };
-  availableForSale: boolean;
-}
+    if (!page) return notFound();
 
-interface ProductsResponse {
-  items: Product[];
-  pageInfo: {
-    hasNextPage: boolean;
-    endCursor: string | null;
-  };
-}
-
-export default function HomePage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const response = await fetch("/api/products?limit=6");
-        if (!response.ok) {
-          throw new Error("Failed to fetch products");
+    return {
+        title: page.seo?.title || page.title,
+        description: page.seo?.description || page.bodySummary,
+        openGraph: {
+            publishedTime: page.createdAt,
+            modifiedTime: page.updatedAt,
+            type: 'article'
         }
-        const data: ProductsResponse = await response.json();
-        setProducts(data.items);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "An error occurred");
-      } finally {
-        setLoading(false);
-      }
-    }
+    };
+}
 
-    fetchProducts();
-  }, []);
+export default async function Page(props: { params: Promise<{ page: string }> }) {
+    const params = await props.params;
+    const page = await getPage(params.page);
 
-  if (loading) {
+    if (!page) return notFound();
+
     return (
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-heading-2 font-jost text-fuchsia-600 mb-8">
-          Our Products
-        </h1>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="bg-light-200 animate-pulse rounded-lg h-96"
-            />
-          ))}
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-heading-2 font-jost text-fuchsia-600 mb-8">
-          Our Products
-        </h1>
-        <p className="text-dark-700">
-          Unable to load products. Please configure your Shopify environment
-          variables.
-        </p>
-      </section>
-    );
-  }
-
-  return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-heading-2 font-jost text-fuchsia-600 mb-8">
-        Our Products
-      </h1>
-      {products.length === 0 ? (
-        <p className="text-dark-700">
-          No products found. Please add products to your Shopify store.
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
-            <Card
-              key={product.id}
-              title={product.title}
-              description=""
-              image={product.featuredImage?.url || "/globe.svg"}
-              price={`$${parseFloat(product.priceRange.minPrice.amount).toFixed(2)}`}
-              href={`/products/${product.handle}`}
-            />
-          ))}
-        </div>
-      )}
-    </section>
-  );
+        <>
+            <h1 className="mb-8 text-5xl font-bold">{page.title}</h1>
+            <Prose className="mb-8" html={page.body} />
+    <p className="text-sm italic">
+        {`This document was last updated on ${new Intl.DateTimeFormat(undefined, {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }).format(new Date(page.updatedAt))}.`}
+    </p>
+    </>
+);
 }

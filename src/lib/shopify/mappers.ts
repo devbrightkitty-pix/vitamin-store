@@ -18,7 +18,7 @@ import {
 } from "./types";
 
 /**
- * Map a single product from the products list query to a list item
+ * Map a single product from the product list query to a list item
  */
 export function mapProductToListItem(product: Product): ProductListItem {
   return {
@@ -35,7 +35,7 @@ export function mapProductToListItem(product: Product): ProductListItem {
 }
 
 /**
- * Map a products connection (paginated list) to a list response
+ * Map a product connection (paginated list) to a list response
  */
 export function mapProductsConnection(
   connection: ProductConnection

@@ -352,10 +352,10 @@ export async function getCollections(): Promise<Collection[]> {
             {
                 handle: '',
                 title: 'All',
-                description: 'All products',
+                description: 'All product',
                 seo: {
                     title: 'All',
-                    description: 'All products'
+                    description: 'All product'
                 },
                 path: '/search',
                 updatedAt: new Date().toISOString()
@@ -371,10 +371,10 @@ export async function getCollections(): Promise<Collection[]> {
         {
             handle: '',
             title: 'All',
-            description: 'All products',
+            description: 'All product',
             seo: {
                 title: 'All',
-                description: 'All products'
+                description: 'All product'
             },
             path: '/search',
             updatedAt: new Date().toISOString()
@@ -506,9 +506,9 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
         'collections/update'
     ];
     const productWebhooks = [
-        'products/create',
-        'products/delete',
-        'products/update'
+        'product/create',
+        'product/delete',
+        'product/update'
     ];
     const topic = (await headers()).get('x-shopify-topic') || 'unknown';
     const secret = req.nextUrl.searchParams.get('secret');
