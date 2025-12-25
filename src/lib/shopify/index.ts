@@ -7,8 +7,8 @@ import { isShopifyError } from '@/lib/shopify/type-guards';
 import { ensureStartsWith } from '@/lib/utils';
 import {
     revalidateTag,
-    unstable_cacheTag as cacheTag,
-    unstable_cacheLife as cacheLife
+    cacheTag,
+    cacheLife
 } from 'next/cache';
 import { cookies, headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -106,19 +106,21 @@ export async function shopifyFetch<T>({
             body
         };
     } catch (e) {
+        // Normalize thrown values into Error instances so Next.js can attach
+        // stack traces and provide clearer diagnostics.
         if (isShopifyError(e)) {
-            throw {
-                cause: e.cause?.toString() || 'unknown',
-                status: e.status || 500,
-                message: e.message,
-                query
-            };
+            const err = new Error(e.message || 'Shopify error');
+            (err as any).status = e.status || 500;
+            (err as any).cause = e.cause?.toString() || 'unknown';
+            (err as any).query = query;
+            throw err;
         }
 
-        throw {
-            error: e,
-            query
-        };
+        const generic = new Error(
+            e instanceof Error ? e.message : JSON.stringify(e)
+        );
+        (generic as any).query = query;
+        throw generic;
     }
 }
 
@@ -461,6 +463,13 @@ export async function getProductRecommendations(
     cacheTag(TAGS.products);
     cacheLife('days');
 
+    if (!endpoint) {
+        console.log(
+            `Skipping getProductRecommendations for '${productId}' - Shopify not configured`
+        );
+        return [];
+    }
+
     const res = await shopifyFetch<ShopifyProductRecommendationsOperation>({
         query: getProductRecommendationsQuery,
         variables: {
@@ -483,6 +492,11 @@ export async function getProducts({
     'use cache';
     cacheTag(TAGS.products);
     cacheLife('days');
+
+    if (!endpoint) {
+        console.log('Skipping getProducts - Shopify not configured');
+        return [];
+    }
 
     const res = await shopifyFetch<ShopifyProductsOperation>({
         query: getProductsQuery,
