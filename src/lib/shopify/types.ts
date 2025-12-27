@@ -100,6 +100,9 @@ export type ProductVariant = {
     value: string;
   }[];
   price: Money;
+  compareAtPrice: Maybe<Money>;
+  sku: Maybe<String>;
+  quantityAvailable: number
 };
 
 export type SEO = {
