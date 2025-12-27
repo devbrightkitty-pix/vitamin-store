@@ -134,7 +134,7 @@ export interface StorefrontFetchOptions {
  * @throws Error if the API call fails or returns errors
  * 
  * @example
- * ```typescript
+ *
  * const response = await storefrontFetch<ProductsQueryResponse>(
  *   PRODUCTS_QUERY,
  *   { first: 10 },

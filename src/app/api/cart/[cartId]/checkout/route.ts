@@ -12,8 +12,8 @@
 
 import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
-import { CART_QUERY } from "@/lib/shopify/queries/cart.ts.bak";
-import { CartQueryResponse } from "@/lib/shopify/types";
+import { getCartQuery } from "@/lib/shopify/queries/cart";
+import { ShopifyCart } from "@/lib/shopify/types";
 import { withErrorHandling, createErrorResponse } from "@/lib/api/errors";
 import { CartIdSchema, parseRouteParams } from "@/lib/api/validation";
 
@@ -30,8 +30,8 @@ export async function POST(request: Request, { params }: RouteParams) {
     const resolvedParams = await params;
     const { cartId } = parseRouteParams(resolvedParams, CartIdSchema);
 
-    const response = await storefrontFetch<CartQueryResponse>(
-      CART_QUERY,
+    const response = await storefrontFetch<ShopifyCart>(
+      getCartQuery,
       { id: cartId },
       { nextCache: "no-store" }
     );

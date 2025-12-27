@@ -12,7 +12,7 @@ import {
   CART_LINES_ADD_MUTATION,
   CART_LINES_UPDATE_MUTATION,
   CART_LINES_REMOVE_MUTATION,
-} from "@/lib/shopify/queries/cart.ts.bak";
+} from "@/lib/shopify/queries/cart";
 import {
   CartLinesAddResponse,
   CartLinesUpdateResponse,
