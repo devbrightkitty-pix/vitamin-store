@@ -14,7 +14,7 @@ import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
 import { CART_QUERY } from "@/lib/shopify/queries/cart";
 import { CartQueryResponse } from "@/lib/shopify/types";
-import { mapCart } from "@/lib/shopify/mappers";
+import { reshapeCart } from "@/lib/shopify";
 import { withErrorHandling, createErrorResponse } from "@/lib/api/errors";
 import { CartIdSchema, parseRouteParams } from "@/lib/api/validation";
 
@@ -41,7 +41,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       );
     }
 
-    const mappedCart = mapCart(response.cart);
+    const mappedCart = reshapeCart(response.cart);
 
     return NextResponse.json(mappedCart);
   });

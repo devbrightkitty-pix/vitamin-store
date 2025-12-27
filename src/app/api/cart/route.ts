@@ -16,7 +16,7 @@ import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
 import { CART_CREATE_MUTATION } from "@/lib/shopify/queries/cart";
 import { CartCreateResponse } from "@/lib/shopify/types";
-import { mapCart } from "@/lib/shopify/mappers";
+import { reshapeCart } from "@/lib/shopify";
 import {
   withErrorHandling,
   createErrorResponse,
@@ -67,7 +67,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const mappedCart = mapCart(response.cartCreate.cart);
+    const mappedCart = reshapeCart(response.cartCreate.cart);
 
     return NextResponse.json(mappedCart, { status: 201 });
   });

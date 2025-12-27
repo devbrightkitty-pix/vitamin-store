@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { GridTileImage } from 'components/grid/tile';
-import Footer from 'components/layout/footer';
+import { GridTileImage } from '@/components/Tile';
+import Footer from '@/components/Footer';
 import { Gallery } from 'components/product/gallery';
 import { ProductProvider } from 'components/product/product-context';
 import { ProductDescription } from 'components/product/product-description';

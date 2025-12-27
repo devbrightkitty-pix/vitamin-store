@@ -10,7 +10,7 @@
  * - SHOPIFY_STOREFRONT_API_VERSION: API version (e.g., 2024-10)
  */
 
-import { ShopifyGraphQLResponse } from "./types";
+import { ShopifyGraphQLResponse } from "@/lib/shopify/types";
 
 // Environment variable validation
 const SHOPIFY_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN;

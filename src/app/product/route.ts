@@ -19,14 +19,14 @@ import { NextResponse } from "next/server";
 import { storefrontFetch } from "@/lib/shopify/client";
 import { PRODUCTS_QUERY } from "@/lib/shopify/queries/product";
 import { ProductsQueryResponse } from "@/lib/shopify/types";
-import { mapProductsConnection } from "@/lib/shopify/mappers";
+import { removeEdgesAndNodes, reshapeProduct } from "@/lib/shopify";
 import { withErrorHandling } from "@/lib/api/errors";
 import { ProductListQuerySchema, parseSearchParams } from "@/lib/api/validation";
 
 export async function GET(request: Request) {
   return withErrorHandling(async () => {
     const { searchParams } = new URL(request.url);
-    
+
     const query = parseSearchParams(searchParams, ProductListQuerySchema);
 
     const variables: Record<string, unknown> = {
@@ -48,8 +48,13 @@ export async function GET(request: Request) {
       }
     );
 
-    const mappedResponse = mapProductsConnection(response.products);
-
-    return NextResponse.json(mappedResponse);
+      //  the mapping logic:
+      const mappedResponse = {
+          items: response.products.edges.map((edge) => reshapeProduct(edge.node)),
+          pageInfo: {
+              hasNextPage: response.products.pageInfo.hasNextPage,
+              endCursor: response.products.pageInfo.endCursor,
+          }
+      };
   });
 }
