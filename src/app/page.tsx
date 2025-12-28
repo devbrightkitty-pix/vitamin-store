@@ -2,38 +2,11 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Card from "@/components/Card";
 import Footer from "@/components/Footer";
+import { getProducts } from "@/lib/shopify";
 
-const sampleProducts = [
-  {
-    title: "Keep it Movin'",
-    description: "Contains traditional botanicals used for centuries",
-    image: "/globe.svg",
-    price: "$13.99",
-    rating: 4.1,
-    reviewCount: 110,
-    href: "#",
-  },
-  {
-    title: "Women's Multi",
-    description: "A Multitasking Blend of Vitamins A, C, D, E, Bs, Biotin & Folic Acid",
-    image: "/globe.svg",
-    price: "$13.99",
-    rating: 4.4,
-    reviewCount: 3746,
-    href: "#",
-  },
-  {
-    title: "Sleep Blackberry Zen",
-    description: "Supports restful sleep with melatonin and botanicals",
-    image: "/globe.svg",
-    price: "$13.99",
-    rating: 4.5,
-    reviewCount: 2500,
-    href: "#",
-  },
-];
+export default async function Home() {
+  const products = await getProducts({});
 
-export default function Home() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -43,11 +16,24 @@ export default function Home() {
           <h1 className="text-heading-2 font-jost text-fuchsia-600 mb-8">
             Our Products
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {sampleProducts.map((product) => (
-              <Card key={product.title} {...product} />
-            ))}
-          </div>
+          {products.length === 0 ? (
+            <p className="text-dark-700">
+              No products found. Please add products to your Shopify store.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.slice(0, 6).map((product) => (
+                <Card
+                  key={product.id}
+                  title={product.title}
+                  description={product.description}
+                  image={product.featuredImage?.url || "/globe.svg"}
+                  price={`$${parseFloat(product.priceRange.minVariantPrice.amount).toFixed(2)}`}
+                  href={`/products/${product.handle}`}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </main>
       

@@ -1,5 +1,17 @@
 export type Maybe<T> = T | null;
 
+export type ShopifyGraphQLError = {
+  message: string;
+  locations?: { line: number; column: number }[];
+  path?: Array<string | number>;
+  extensions?: Record<string, unknown>;
+};
+
+export type ShopifyGraphQLResponse<T> = {
+  data?: T;
+  errors?: ShopifyGraphQLError[];
+};
+
 export type Connection<T> = {
   edges: Array<Edge<T>>;
 };
@@ -88,6 +100,9 @@ export type ProductVariant = {
     value: string;
   }[];
   price: Money;
+  compareAtPrice: Maybe<Money>;
+  sku: Maybe<String>;
+  quantityAvailable: number
 };
 
 export type SEO = {

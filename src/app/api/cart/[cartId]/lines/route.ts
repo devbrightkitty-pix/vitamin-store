@@ -12,13 +12,13 @@ import {
   CART_LINES_ADD_MUTATION,
   CART_LINES_UPDATE_MUTATION,
   CART_LINES_REMOVE_MUTATION,
-} from "@/lib/shopify/queries/cart.ts.bak";
+} from "@/lib/shopify/queries/cart";
 import {
   CartLinesAddResponse,
   CartLinesUpdateResponse,
   CartLinesRemoveResponse,
 } from "@/lib/shopify/types";
-import { mapCart } from "@/lib/shopify/mappers";
+import { reshapeCart } from "@/lib/shopify";
 import {
   withErrorHandling,
   createErrorResponse,
@@ -82,7 +82,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    const mappedCart = mapCart(response.cartLinesAdd.cart);
+    const mappedCart = reshapeCart(response.cartLinesAdd.cart);
 
     return NextResponse.json(mappedCart);
   });

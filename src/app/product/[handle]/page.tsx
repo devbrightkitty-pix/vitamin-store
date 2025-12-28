@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { GridTileImage } from 'components/grid/tile';
-import Footer from 'components/layout/footer';
-import { Gallery } from 'components/product/gallery';
-import { ProductProvider } from 'components/product/product-context';
-import { ProductDescription } from 'components/product/product-description';
-import { HIDDEN_PRODUCT_TAG } from 'lib/constants';
-import { getProduct, getProductRecommendations } from 'lib/shopify';
-import { Image } from 'lib/shopify/types';
+import { GridTileImage } from '@/components/Tile';
+import Footer from '@/components/Footer';
+import { Gallery } from '@/components/Gallery';
+import { ProductProvider } from '@/components/Product-context';
+import { ProductDescription } from '@/components/Product-description';
+import { HIDDEN_PRODUCT_TAG } from '@/lib/constants';
+import { getProduct, getProductRecommendations } from '@/lib/shopify';
+import { Image } from '@/lib/shopify/types';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -73,7 +73,7 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
     };
 
     return (
-        <ProductProvider>
+        <ProductProvider product={undefined}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{

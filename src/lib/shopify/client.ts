@@ -10,7 +10,7 @@
  * - SHOPIFY_STOREFRONT_API_VERSION: API version (e.g., 2024-10)
  */
 
-import { ShopifyGraphQLResponse } from "./types";
+import { ShopifyGraphQLResponse } from "@/lib/shopify/types";
 
 // Environment variable validation
 const SHOPIFY_STORE_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN;
@@ -44,7 +44,8 @@ function getStorefrontApiUrl(): string {
  */
 interface CacheEntry<T> {
   data: T;
-  timestamp: number;
+  /** expiration timestamp (ms since epoch) */
+  expiresAt: number;
 }
 
 class SimpleCache {
@@ -61,7 +62,7 @@ class SimpleCache {
     if (!entry) return undefined;
 
     const now = Date.now();
-    if (now - entry.timestamp > this.defaultTTL) {
+    if (now > entry.expiresAt) {
       this.cache.delete(key);
       return undefined;
     }
@@ -76,9 +77,10 @@ class SimpleCache {
    * @param ttl Optional TTL in milliseconds
    */
   set<T>(key: string, value: T, ttl?: number): void {
+    const effectiveTTL = typeof ttl === "number" ? ttl : this.defaultTTL;
     this.cache.set(key, {
       data: value,
-      timestamp: Date.now() + (ttl ? ttl - this.defaultTTL : 0),
+      expiresAt: Date.now() + effectiveTTL,
     });
   }
 
@@ -132,7 +134,7 @@ export interface StorefrontFetchOptions {
  * @throws Error if the API call fails or returns errors
  * 
  * @example
- * ```typescript
+ *
  * const response = await storefrontFetch<ProductsQueryResponse>(
  *   PRODUCTS_QUERY,
  *   { first: 10 },
