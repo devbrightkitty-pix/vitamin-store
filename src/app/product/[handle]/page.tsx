@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
 import { GridTileImage } from '@/components/Tile';
 import Footer from '@/components/Footer';
 import { Gallery } from '@/components/Gallery';
@@ -73,7 +72,7 @@ export default async function ProductPage(props: { params: Promise<{ handle: str
     };
 
     return (
-        <ProductProvider product={undefined}>
+        <ProductProvider product={product}>
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{

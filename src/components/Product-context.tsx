@@ -4,6 +4,7 @@ import { createContext, useContext, useState, ReactNode } from 'react';
 import {Product, ProductVariant} from '@/lib/shopify/types';
 
 
+
 interface ProductContextType {
     product: Product;
     selectedVariant: ProductVariant;
@@ -17,8 +18,9 @@ interface ProductContextType {
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
 
 interface ProductProviderProps {
-    children: ReactNode;
     product: Product;
+    children:ReactNode;
+
 }
 
 export function ProductProvider({ children,product }: ProductProviderProps) {

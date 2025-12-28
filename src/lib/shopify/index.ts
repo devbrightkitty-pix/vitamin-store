@@ -124,11 +124,11 @@ export async function shopifyFetch<T>({
     }
 }
 
-const removeEdgesAndNodes = <T>(array: Connection<T>): T[] => {
+export const removeEdgesAndNodes = <T>(array: Connection<T>): T[] => {
     return array.edges.map((edge) => edge?.node);
 };
 
-const reshapeCart = (cart: ShopifyCart): Cart => {
+export const reshapeCart = (cart: ShopifyCart): Cart => {
     if (!cart.cost?.totalTaxAmount) {
         cart.cost.totalTaxAmount = {
             amount: '0.0',
@@ -183,7 +183,7 @@ const reshapeImages = (images: Connection<Image>, productTitle: string) => {
     });
 };
 
-const reshapeProduct = (
+/*const reshapeProduct = (
     product: ShopifyProduct,
     filterHiddenProducts: boolean = true
 ) => {
@@ -202,8 +202,8 @@ const reshapeProduct = (
         variants: removeEdgesAndNodes(variants)
     };
 };
-
-const reshapeProducts = (products: ShopifyProduct[]) => {
+*/
+export const reshapeProduct = (products: ShopifyProduct[]) => {
     const reshapedProducts = [];
 
     for (const product of products) {
@@ -338,7 +338,7 @@ export async function getCollectionProducts({
         return [];
     }
 
-    return reshapeProducts(
+    return reshapeProduct(
         removeEdgesAndNodes(res.body.data.collection.products)
     );
 }
@@ -477,7 +477,7 @@ export async function getProductRecommendations(
         }
     });
 
-    return reshapeProducts(res.body.data.productRecommendations);
+    return reshapeProduct(res.body.data.productRecommendations);
 }
 
 export async function getProducts({
@@ -507,7 +507,7 @@ export async function getProducts({
         }
     });
 
-    return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+    return reshapeProduct(removeEdgesAndNodes(res.body.data.products));
 }
 
 // This is called from `app/api/revalidate.ts` so providers can control revalidation logic.

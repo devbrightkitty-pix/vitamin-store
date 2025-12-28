@@ -1,60 +1,38 @@
-/**
- * GET /api/product
- * 
- * Fetch a paginated list of product from the Shopify Storefront API.
- * 
- * Query Parameters:
- * - cursor: Pagination cursor for fetching next page
- * - limit: Number of product to fetch (default: 20, max: 100)
- * - search: Search query string
- * - sortKey: Sort key (TITLE, PRICE, BEST_SELLING, etc.)
- * - reverse: Reverse sort order (true/false)
- * 
- * Response:
- * - items: Array of product with id, title, handle, featuredImage, priceRange, availableForSale
- * - pageInfo: { hasNextPage, endCursor }
- */
-
 import { NextResponse } from "next/server";
-import { storefrontFetch } from "@/lib/shopify/client";
-import { PRODUCTS_QUERY } from "@/lib/shopify/queries/product";
-import { ProductsQueryResponse } from "@/lib/shopify/types";
+import { shopifyFetch } from "@/lib/shopify";
+import { getProductsQuery } from "@/lib/shopify/queries/product";
+import { ShopifyProductsOperation } from "@/lib/shopify/types";
 import { removeEdgesAndNodes, reshapeProduct } from "@/lib/shopify";
 import { withErrorHandling } from "@/lib/api/errors";
 import { ProductListQuerySchema, parseSearchParams } from "@/lib/api/validation";
 
-export async function GET(request: Request) {
-  return withErrorHandling(async () => {
-    const { searchParams } = new URL(request.url);
+export async function GET(request: Request): Promise<NextResponse> {
+    return withErrorHandling(async () => {
+        const { searchParams } = new URL(request.url);
+        const query = parseSearchParams(searchParams, ProductListQuerySchema);
 
-    const query = parseSearchParams(searchParams, ProductListQuerySchema);
+        const variables = {
+            first: query.limit,
+            after: query.cursor || null,
+            query: query.search || null,
+            sortKey: query.sortKey || null,
+            reverse: query.reverse || false,
+        };
 
-    const variables: Record<string, unknown> = {
-      first: query.limit,
-      after: query.cursor || null,
-      query: query.search || null,
-      sortKey: query.sortKey || null,
-      reverse: query.reverse || false,
-    };
+        const response = await shopifyFetch<ShopifyProductsOperation>({
+            query: getProductsQuery,
+            variables,
+        });
 
-    const response = await storefrontFetch<ProductsQueryResponse>(
-      PRODUCTS_QUERY,
-      variables,
-      {
-        cache: true,
-        cacheTTL: 60 * 1000,
-        nextCache: "force-cache",
-        revalidate: 60,
-      }
-    );
+        const product = removeEdgesAndNodes(response.body.data.products);
+        const mappedResponse = {
+            items: reshapeProduct(product),
+            pageInfo: {
+                //hasNextPage: response.body.data.products.pageInfo.hasNextPage,
+                //endCursor: response.body.data.products.pageInfo.endCursor,
+            }
+        };
 
-      //  the mapping logic:
-      const mappedResponse = {
-          items: response.products.edges.map((edge) => reshapeProduct(edge.node)),
-          pageInfo: {
-              hasNextPage: response.products.pageInfo.hasNextPage,
-              endCursor: response.products.pageInfo.endCursor,
-          }
-      };
-  });
+        return NextResponse.json(mappedResponse);
+    });
 }

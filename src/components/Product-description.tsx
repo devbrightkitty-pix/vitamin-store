@@ -2,13 +2,16 @@
 
 import {useState} from "react";
 import {useProduct} from "@/components/Product-context";
-import {Money} from "@/lib/shopify/types";
+import {Money, Product, ProductVariant, ShopifyProduct} from "@/lib/shopify/types";
 
 
+interface ProductDescriptionProps {
+    product: Product;
+}
 
-export function ProductDescription() {
+export function ProductDescription({product}: ProductDescriptionProps) {
     const {
-        product,
+
         selectedVariant,
         setSelectedVariant,
         quantity,
@@ -17,7 +20,7 @@ export function ProductDescription() {
         setIsAddingToCart
     } = useProduct();
 
-    const handleAddToCart =async () => {
+    const handleAddToCart = async () => {
         setIsAddingToCart(true);
         try {
             // TODO: Implement cart add logic
@@ -26,7 +29,7 @@ export function ProductDescription() {
                 quantity
             });
         } catch (error) {
-            console.error('Failed to add to cart',error);
+            console.error('Failed to add to cart', error);
         } finally {
             setIsAddingToCart(false);
         }
@@ -52,7 +55,7 @@ export function ProductDescription() {
                         <span className="ml-2 text-lg text-neutral-500 line-through">
                             {formatPrice(selectedVariant.compareAtPrice)}
                         </span>
-                    ) }
+                    )}
                 </div>
             </div>
             {/* Description */}
